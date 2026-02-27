@@ -19,12 +19,12 @@ export class AppComponent implements AfterViewInit {
   isVisible = true;
   templates: TemplateRef<any>[] = [];
 
-  @ViewChild('template1') template1!: TemplateRef<any>;
-  @ViewChild('template2') template2!: TemplateRef<any>;
-  @ViewChild('template3') template3!: TemplateRef<any>;
+  @ViewChild('template1') myTemplate1!: TemplateRef<any>;
+  @ViewChild('template2') myTemplate2!: TemplateRef<any>;
+  @ViewChild('template3') myTemplate3!: TemplateRef<any>;
 
   ngAfterViewInit() {
-    this.templates = [this.template1, this.template2, this.template3];
+    this.templates = [this.myTemplate1, this.myTemplate2, this.myTemplate3];
   };
 
   public deleteElement(): void {
