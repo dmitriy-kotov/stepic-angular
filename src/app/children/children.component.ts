@@ -8,5 +8,5 @@ import {Component, input} from '@angular/core';
   styleUrl: './children.component.scss'
 })
 export class ChildrenComponent {
-  item = input<string>()
+  myItem = input<string>()
 }
