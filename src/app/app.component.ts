@@ -13,7 +13,7 @@ import { CommonModule } from "@angular/common";
 })
 export class AppComponent {
   onSubmit(form: NgForm) {
-    console.log(`Вы ввели имя ${form.value.firstField}, а так же email ${form.value.email}`);
-    alert(`Вы ввели имя ${form.value.firstField}, а так же email ${form.value.email}`)
+    console.log(`Вы ввели имя ${form.value.firstField}, а так же email ${form.value.email} in form "${form.name}"`);
+    alert(`Вы ввели имя ${form.value.firstField}, а так же email ${form.value.email} in form "${form.name}"`);
   };
 }
