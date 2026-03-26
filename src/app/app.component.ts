@@ -12,8 +12,8 @@ import { CommonModule } from "@angular/common";
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  onSubmit(myForm: NgForm) {
-    console.log(`Вы ввели имя ${myForm.value.firstField}, а так же email ${myForm.value.email}`);
-    alert(`Вы ввели имя ${myForm.value.firstField}, а так же email ${myForm.value.email}`)
+  onSubmit(form: NgForm) {
+    console.log(`Вы ввели имя ${form.value.firstField}, а так же email ${form.value.email}`);
+    alert(`Вы ввели имя ${form.value.firstField}, а так же email ${form.value.email}`)
   };
 }
