@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { FormsModule } from "@angular/forms";
-import { Observable, Subscription } from "rxjs";
+import { FormsModule } from '@angular/forms';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, FormsModule],
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'] // Исправлено с styleUrl на styleUrls
+  styleUrls: ['./app.component.scss'], // Исправлено с styleUrl на styleUrls
 })
 export class AppComponent {
   subscription: Subscription | null = null;
@@ -22,12 +22,13 @@ export class AppComponent {
     // Функция очистки, вызываемая при отписке
     return () => {
       clearInterval(intervalId);
-      console.log('Интервал очищен');
+      console.log(`Интервал очищен, intervalId: ${intervalId}`);
     };
   });
 
   public startStream(): void {
-    if (!this.subscription) { // Предотвращаем множественные подписки
+    if (!this.subscription) {
+      // Предотвращаем множественные подписки
       this.subscription = this.stream$.subscribe((data) => {
         console.log(data);
       });
