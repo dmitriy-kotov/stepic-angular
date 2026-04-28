@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Observable, Subscription } from 'rxjs';
+import { Observer, Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -27,11 +27,23 @@ export class AppComponent {
   });
 
   public startStream(): void {
+    // Предотвращаем множественные подписки
     if (!this.subscription) {
-      // Предотвращаем множественные подписки
-      this.subscription = this.stream$.subscribe((data) => {
-        console.log(data);
-      });
+      const observer: Observer<string> = {
+        next: (value: string) => {
+          console.log(`value: ${value}`);
+        },
+        error: (error: any) => {
+          console.log(`error: ${error}`);
+        },
+        complete: () => {
+          console.log("'complete' has been called");
+        },
+      };
+      // this.subscription = this.stream$.subscribe((data) => {
+      //   console.log(data);
+      // });
+      this.subscription = this.stream$.subscribe(observer);
       console.log('Поток запущен');
     }
   }
