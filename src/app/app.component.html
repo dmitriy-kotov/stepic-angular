@@ -2,6 +2,7 @@
 <div class="button-group">
   <button (click)="startStream()" [disabled]="subscription">Start Stream</button>
   <button (click)="stopStream()" [disabled]="!subscription">Stop Stream</button>
+  <button (click)="startMyExample()" [disabled]="subscription">Start my stream</button>
 </div>
 
 @if(coordinates){

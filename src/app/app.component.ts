@@ -1,8 +1,16 @@
 import { Component, OnDestroy } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { Observable, Subscription, fromEvent, fromEventPattern } from 'rxjs';
+import {
+  Observable,
+  Observer,
+  Subscription,
+  fromEvent,
+  fromEventPattern,
+} from 'rxjs';
 import { JsonPipe } from '@angular/common';
+import { of, throwError } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -61,5 +69,47 @@ export class AppComponent implements OnDestroy {
   // Отписываемся от потока при уничтожении компонента
   ngOnDestroy(): void {
     this.stopStream();
+  }
+
+  startMyExample() {
+    console.log('On startMyExample()');
+    const source$ = of(1, 2, 3, 4, 5).pipe(
+      map((value) => {
+        if (value === 3) {
+          throw new Error('Ошибка при обработке значения 3');
+        }
+        return value * 2;
+      }),
+      catchError((error) => {
+        console.error('Произошла ошибка:', error.message);
+        // throw new Error(error);
+
+        // return throwError(
+        //   () => new Error('Ошибка обработана, создан новый поток без значений, но уже с "этой" ошибкой')
+        // );
+
+        // return of(3, 4, 'Ошибка обработана, поток продолжается');
+        return of(-1, -2, -3 /*, 'Ошибка обработана, поток продолжается' */);
+      })
+    );
+
+    // source$.subscribe((result) => {
+    //   console.log(result);
+    // });
+
+    const observer: Observer<number> = {
+      next: (value: number) => {
+        console.log(`value: ${value}`);
+      },
+
+      error: (error: any) => {
+        console.error(`error: ${error}`);
+      },
+
+      complete: () => {
+        console.log("'complete' has been called");
+      },
+    };
+    source$.subscribe(observer);
   }
 }
