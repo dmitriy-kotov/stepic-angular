@@ -7,6 +7,8 @@ import {
   Subscription,
   fromEvent,
   fromEventPattern,
+  throttleTime,
+  scan,
 } from 'rxjs';
 import { JsonPipe } from '@angular/common';
 import { of, throwError } from 'rxjs';
@@ -21,6 +23,7 @@ import { map, catchError } from 'rxjs/operators';
 })
 export class AppComponent implements OnDestroy {
   subscription: Subscription | null = null;
+  mouseClickedSubscription: Subscription | null = null;
 
   // Создаём поток событий движения мыши
   stream$: Observable<MouseEvent> = fromEvent<MouseEvent>(
@@ -33,6 +36,10 @@ export class AppComponent implements OnDestroy {
       document.removeEventListener('mousemove', handler);
       console.log('"removeEventListener" have been called');
     }
+  );
+  mouseClickedStream$: Observable<number> = fromEvent(document, 'click').pipe(
+    throttleTime(1000),
+    scan((count) => count + 1, 0)
   );
 
   // Объект для хранения координат мыши
@@ -55,6 +62,12 @@ export class AppComponent implements OnDestroy {
       });
       console.log('Поток запущен');
     }
+
+    if (!this.mouseClickedSubscription) {
+      this.mouseClickedSubscription = this.mouseClickedStream$.subscribe(
+        (count) => console.log(`Clicked ${count} times`)
+      );
+    }
   }
 
   // Метод для остановки потока (опционально)
@@ -64,6 +77,9 @@ export class AppComponent implements OnDestroy {
       this.subscription = null;
       console.log('Поток остановлен');
     }
+
+    this.mouseClickedSubscription?.unsubscribe();
+    this.mouseClickedSubscription = null;
   }
 
   // Отписываемся от потока при уничтожении компонента
