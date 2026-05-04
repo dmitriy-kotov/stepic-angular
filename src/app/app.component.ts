@@ -61,12 +61,11 @@ export class AppComponent implements OnDestroy {
         },
       });
       console.log('Поток запущен');
-    }
 
-    if (!this.mouseClickedSubscription) {
       this.mouseClickedSubscription = this.mouseClickedStream$.subscribe(
         (count) => console.log(`Clicked ${count} times`)
       );
+      this.subscription.add(this.mouseClickedSubscription);
     }
   }
 
@@ -77,9 +76,6 @@ export class AppComponent implements OnDestroy {
       this.subscription = null;
       console.log(`Поток остановлен, mouseClickedSubscription.closed: ${this.mouseClickedSubscription?.closed}`);
     }
-
-    this.mouseClickedSubscription?.unsubscribe();
-    this.mouseClickedSubscription = null;
   }
 
   // Отписываемся от потока при уничтожении компонента
@@ -127,5 +123,8 @@ export class AppComponent implements OnDestroy {
       },
     };
     source$.subscribe(observer);
+
+    console.log(`mouseClickedSubscription.closed: ${this.mouseClickedSubscription?.closed}`);
+    this.mouseClickedSubscription?.unsubscribe();
   }
 }
