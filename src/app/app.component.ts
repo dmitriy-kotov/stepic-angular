@@ -75,7 +75,7 @@ export class AppComponent implements OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
       this.subscription = null;
-      console.log('Поток остановлен');
+      console.log(`Поток остановлен, mouseClickedSubscription.closed: ${this.mouseClickedSubscription?.closed}`);
     }
 
     this.mouseClickedSubscription?.unsubscribe();
