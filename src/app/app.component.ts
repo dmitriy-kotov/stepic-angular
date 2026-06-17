@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import {
@@ -21,7 +21,7 @@ import { map, catchError } from 'rxjs/operators';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnDestroy {
+export class AppComponent implements AfterViewInit, OnDestroy {
   subscription: Subscription | null = null;
   mouseClickedSubscription: Subscription | null = null;
 
@@ -44,6 +44,12 @@ export class AppComponent implements OnDestroy {
 
   // Объект для хранения координат мыши
   coordinates: { x: number; y: number } | null = null;
+
+  // 1. Get reference to the element
+  @ViewChild('myButton', { static: true })
+  myButton!: ElementRef<HTMLButtonElement>;
+
+  private clickSubscription!: Subscription;
 
   public startStream(): void {
     if (!this.subscription) {
@@ -78,9 +84,22 @@ export class AppComponent implements OnDestroy {
     }
   }
 
+  ngAfterViewInit(): void {
+    // 2. Pass the nativeElement and event name to fromEvent
+    this.clickSubscription = fromEvent(this.myButton.nativeElement, 'click')
+      .subscribe((event: Event) => {
+        console.log('Button clicked!', event);
+      });
+  }
+
   // Отписываемся от потока при уничтожении компонента
   ngOnDestroy(): void {
     this.stopStream();
+
+    // 3. Always unsubscribe to avoid memory leaks
+    if (this.clickSubscription) {
+      this.clickSubscription.unsubscribe();
+    }
   }
 
   startMyExample() {
