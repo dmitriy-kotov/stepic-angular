@@ -26,6 +26,7 @@ import {
   switchMap,
   mergeMap,
   concatMap,
+  exhaustMap,
 } from 'rxjs/operators';
 
 @Component({
@@ -116,7 +117,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
       .pipe(
         // switchMap(() => {
         // mergeMap(() => {
-        concatMap(() => {
+        // concatMap(() => {
+        exhaustMap(() => {
           console.log('IN', (index += 1));
           return getAsyncObs(index);
         })
