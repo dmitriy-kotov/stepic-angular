@@ -19,7 +19,7 @@ import {
 } from 'rxjs';
 import { JsonPipe } from '@angular/common';
 import { of, throwError } from 'rxjs';
-import { map, catchError, first, switchMap } from 'rxjs/operators';
+import { map, catchError, first, switchMap, mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -107,7 +107,8 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     // 2. Pass the nativeElement and event name to fromEvent
     this.clickSubscription = fromEvent(this.myButton.nativeElement, 'click')
       .pipe(
-        switchMap(() => {
+        // switchMap(() => {
+        mergeMap(() => {
           console.log('IN', (index += 1));
           return getAsyncObs(index);
         })
