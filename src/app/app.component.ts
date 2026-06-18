@@ -1,4 +1,10 @@
-import { AfterViewInit, Component, ElementRef, OnDestroy, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  ViewChild,
+} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import {
@@ -9,10 +15,11 @@ import {
   fromEventPattern,
   throttleTime,
   scan,
+  timer,
 } from 'rxjs';
 import { JsonPipe } from '@angular/common';
 import { of, throwError } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { map, catchError, first, switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -80,15 +87,33 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     if (this.subscription) {
       this.subscription.unsubscribe();
       this.subscription = null;
-      console.log(`Поток остановлен, mouseClickedSubscription.closed: ${this.mouseClickedSubscription?.closed}`);
+      console.log(
+        `Поток остановлен, mouseClickedSubscription.closed: ${this.mouseClickedSubscription?.closed}`
+      );
     }
   }
 
   ngAfterViewInit(): void {
+    const getAsyncObs = (num: number) => {
+      const time = 4000 * Math.random();
+      return timer(time < 1500 ? 1500 : time).pipe(
+        map(() => num),
+        first()
+      );
+    };
+
+    let index = 0;
+
     // 2. Pass the nativeElement and event name to fromEvent
     this.clickSubscription = fromEvent(this.myButton.nativeElement, 'click')
-      .subscribe((event: Event) => {
-        console.log('Button clicked!', event);
+      .pipe(
+        switchMap(() => {
+          console.log('IN', (index += 1));
+          return getAsyncObs(index);
+        })
+      )
+      .subscribe((resultIndex: number) => {
+        console.log('OUT', resultIndex);
       });
   }
 
@@ -143,7 +168,9 @@ export class AppComponent implements AfterViewInit, OnDestroy {
     };
     source$.subscribe(observer);
 
-    console.log(`mouseClickedSubscription.closed: ${this.mouseClickedSubscription?.closed}`);
+    console.log(
+      `mouseClickedSubscription.closed: ${this.mouseClickedSubscription?.closed}`
+    );
     this.mouseClickedSubscription?.unsubscribe();
   }
 }
